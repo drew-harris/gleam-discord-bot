@@ -1,4 +1,4 @@
-const socket = new WebSocket("ws://localhost:3000");
+const socket = new WebSocket("https://gateway.discord.gg");
 
 socket.onopen = () => {
   console.log("Socket opened!");

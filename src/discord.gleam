@@ -1,6 +1,7 @@
 import birl
 import gleam/erlang/process
 import gleam/http/request
+import gleam/http
 import gleam/io
 import gleam/option.{None}
 import gleam/otp/actor
@@ -12,8 +13,18 @@ pub type Msg {
   SendText(String)
 }
 
+fn get_request() {
+  let req =
+    request.new()
+    |> request.set_host("gateway.discord.gg")
+    |> request.set_path("/")
+    |> request.set_scheme(Https())
+}
+
 pub fn main() {
-  let assert Ok(req) = request.to("http://localhost:3000")
+  // let assert Ok(req) = request.to("https://gateway.discord.gg/")
+  let req = get_request()
+
   let builder =
     stratus.websocket(
       request: req,
@@ -21,17 +32,17 @@ pub fn main() {
       loop: fn(msg, state, conn) {
         case msg {
           stratus.Text(_msg) -> {
-            // let assert Ok(_resp) =
-            //   stratus.send_text_message(conn, "hello, world!")
+            let assert Ok(_resp) =
+              stratus.send_text_message(conn, "hello, world!")
             actor.continue(state)
           }
           stratus.User(SendText(msg)) -> {
-            // let assert Ok(_resp) = stratus.send_text_message(conn, msg)
+            let assert Ok(_resp) = stratus.send_text_message(conn, msg)
             actor.continue(state)
           }
           stratus.Binary(_msg) -> actor.continue(state)
           stratus.User(Close) -> {
-            // let assert Ok(_) = stratus.close(conn)
+            let assert Ok(_) = stratus.close(conn)
             actor.Stop(process.Normal)
           }
         }
