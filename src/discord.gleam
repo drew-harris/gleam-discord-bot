@@ -1,7 +1,6 @@
 import birl
 import gleam/erlang/process
 import gleam/http/request
-import gleam/http
 import gleam/io
 import gleam/option.{None}
 import gleam/otp/actor
@@ -14,14 +13,13 @@ pub type Msg {
 }
 
 fn get_request() {
-  let req =
-    request.new()
-    |> request.set_host("gateway.discord.gg")
-    |> request.set_path("/")
-    |> request.set_scheme(Https())
+  request.new()
+  |> request.set_host("gateway.discord.gg")
+  |> request.set_path("/")
 }
 
 pub fn main() {
+  //NOTE:  Neither of these work (get the same error)
   // let assert Ok(req) = request.to("https://gateway.discord.gg/")
   let req = get_request()
 
