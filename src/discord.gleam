@@ -20,8 +20,8 @@ fn get_request() {
 
 pub fn main() {
   //NOTE:  Neither of these work (get the same error)
-  // let assert Ok(req) = request.to("https://gateway.discord.gg/")
-  let req = get_request()
+  let assert Ok(req) = request.to("https://gateway.discord.gg/")
+  // let req = get_request()
 
   let builder =
     stratus.websocket(
@@ -29,9 +29,10 @@ pub fn main() {
       init: fn() { #(Nil, None) },
       loop: fn(msg, state, conn) {
         case msg {
-          stratus.Text(_msg) -> {
-            let assert Ok(_resp) =
-              stratus.send_text_message(conn, "hello, world!")
+          stratus.Text(msg) -> {
+            io.debug(msg)
+            // let assert Ok(_resp) =
+            //   stratus.send_text_message(conn, "hello, world!")
             actor.continue(state)
           }
           stratus.User(SendText(msg)) -> {
